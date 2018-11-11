@@ -14,6 +14,11 @@ from shake_drop import build_shake_drop_model
 from shake_shake import build_shake_shake_model
 import tensorflow as tf
 from wrn import build_wrn_model
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
+
+
 
 tf.flags.DEFINE_string('model_name', 'wrn',
                        'wrn, shake_shake_32, shake_shake_96, shake_shake_112, '
@@ -67,16 +72,16 @@ def build_model(inputs, num_classes, is_training, hparams):
     The logits of the image model.
   """
   scopes = setup_arg_scopes(is_training)
-  with contextlib.nested(*scopes):
-    if hparams.model_name == 'pyramid_net':
-      logits = build_shake_drop_model(
-          inputs, num_classes, is_training)
-    elif hparams.model_name == 'wrn':
-      logits = build_wrn_model(
-          inputs, num_classes, hparams.wrn_size)
-    elif hparams.model_name == 'shake_shake':
-      logits = build_shake_shake_model(
-          inputs, num_classes, hparams, is_training)
+ # with contextlib.nested(*scopes):
+ #   if hparams.model_name == 'pyramid_net':
+ #     logits = build_shake_drop_model(
+ #         inputs, num_classes, is_training)
+ #   elif hparams.model_name == 'wrn':
+  logits = build_wrn_model(
+        inputs, num_classes, hparams.wrn_size)
+ #   elif hparams.model_name == 'shake_shake':
+ #     logits = build_shake_shake_model(
+ #         inputs, num_classes, hparams, is_training)
   return logits
 
 
@@ -332,7 +337,7 @@ class CifarModelTrainer(object):
 
     # Build the child graph
     with tf.Graph().as_default(), tf.device(
-        '/cpu:0' if FLAGS.use_cpu else '/gpu:0'):
+        '/cpu:0' if FLAGS.use_cpu else '/gpu:0,1,2,3'):
       m, meval = self._build_models()
 
       # Figure out what epoch we are on
@@ -345,7 +350,7 @@ class CifarModelTrainer(object):
           starting_epoch, valid_accuracy))
       training_accuracy = None
 
-      for curr_epoch in xrange(starting_epoch, hparams.num_epochs):
+      for curr_epoch in range(starting_epoch, hparams.num_epochs):
 
         # Run one training epoch
         training_accuracy = self._run_training_loop(m, curr_epoch)

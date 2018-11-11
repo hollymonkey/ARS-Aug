@@ -129,7 +129,7 @@ def get_dataset(subpolicies,dataset, reduced):
     model.compile(optimizers.SGD(decay=1e-4), 'categorical_crossentropy', ['accuracy'])
     gen = autoaugment(subpolicies,Xtr,ytr)
     model.fit_generator(
-           gen, 4000, 1, verbose=0, use_multiprocessing=True)
+           gen, 4000, 120, verbose=0, use_multiprocessing=True)
     accuracy = model.evaluate(Xts, yts, verbose=0)[1]
     return accuracy
 
@@ -217,12 +217,13 @@ class Worker(object):
         prob = []
         magnitude = []
         for a in self.w_policy:
+            a[0] = 1 / (1 + np.exp(-a[0]))
             if cnt % 3 ==1 :
-                 type_now.append(abs(int(a[0] * 16)))
+                 type_now.append(int(a[0] * 16))
             elif cnt % 3 ==2:
-                 prob.append(abs(a[0]))
+                 prob.append(a[0])
             else:
-                 magnitude.append(abs(a[0]))
+                 magnitude.append(a[0])
             cnt = cnt + 1
         cnt = 0
         subpolicies = []
@@ -366,9 +367,7 @@ class ARSLearner(object):
         if policy_params['type'] == 'linear':
             self.policy = LinearPolicy(policy_params)
             self.w_policy = self.policy.get_weights()
-          #  for a in self.w_policy:
-           #         print('b = ', 2*(a[0]+1))
-           # print('policy =  ',self.w_policy)
+        
         else:
             raise NotImplementedError
             
@@ -403,17 +402,12 @@ class ARSLearner(object):
                                                  shift = self.shift,
                                                  evaluate=evaluate) for worker in self.workers[:(num_deltas % self.num_workers)]]
         
-        rollout_ids_three = [worker.get_answer.remote() for worker in self.workers]
+       
 
         # gather results 
         results_one = ray.get(rollout_ids_one)
         results_two = ray.get(rollout_ids_two)
         
-        results_three = ray.get(rollout_ids_three)
-        
-        for result in results_three:
-            for b in result:
-                print('result = ',b)
 
         rollout_rewards, deltas_idx = [], [] 
 
@@ -422,8 +416,7 @@ class ARSLearner(object):
                 self.timesteps += result["steps"]
             deltas_idx += result['deltas_idx']
             rollout_rewards += result['rollout_rewards']
-        #      print('result = ',result)
-       #     print('result = ', result['rollout_rewards'] )
+      
 
         for result in results_two:
             if not evaluate:
@@ -594,8 +587,8 @@ if __name__ == '__main__':
     # for ARS V1 use filter = 'NoFilter'
     parser.add_argument('--filter', type=str, default='MeanStdFilter')
 
-    #local_ip = socket.gethostbyname(socket.gethostname())
-    local_ip='192.168.5.123'
+    local_ip = socket.gethostbyname(socket.gethostname())
+  
     ray.init(redis_address= local_ip + ':6379')
     
     args = parser.parse_args()
