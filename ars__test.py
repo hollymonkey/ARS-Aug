@@ -1,6 +1,7 @@
 #Code in this file is adapted from
 #the Augmented Random Search method
-#https://github.com/modestyachts/ARS
+#https://github.com/modestyachts/ARS 
+
 import tensorflow as tf
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True

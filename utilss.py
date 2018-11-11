@@ -1,6 +1,7 @@
 # Code in this file is copied and adapted from
 # https://github.com/openai/evolution-strategies-starter.
 
+
 import numpy as np
 
 def itergroups(items, group_size):

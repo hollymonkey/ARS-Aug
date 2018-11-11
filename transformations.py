@@ -1,3 +1,5 @@
+#code in this file is adpated from rpmcruz/autoaugment
+#https://github.com/rpmcruz/autoaugment/blob/master/transformations.py
 import PIL, PIL.ImageOps, PIL.ImageEnhance, PIL.ImageDraw
 import matplotlib.pyplot as plt
 import numpy as np

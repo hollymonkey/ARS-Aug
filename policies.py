@@ -1,9 +1,4 @@
-'''
-Policy class for computing action from weights and observation vector. 
-Horia Mania --- hmania@berkeley.edu
-Aurelia Guy
-Benjamin Recht 
-'''
+#follow ARS
 
 
 import numpy as np
