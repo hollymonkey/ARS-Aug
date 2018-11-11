@@ -88,7 +88,7 @@ def autoaugment(subpolicies,X, y):
         while True:
             ix = np.arange(len(X))
             np.random.shuffle(ix)
-            for i in range(4000):
+            for i in range(4000//128):
                 _ix = ix[i*128:(i+1)*128]
                 _X = X[_ix]
                 _y = y[_ix]
