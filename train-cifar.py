@@ -1,3 +1,5 @@
+#code in this file is adapted from Autoaugment
+#https://github.com/tensorflow/models/tree/master/research/autoaugment
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

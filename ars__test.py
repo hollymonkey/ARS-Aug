@@ -1,10 +1,6 @@
-'''
-Parallel implementation of the Augmented Random Search method.
-Horia Mania --- hmania@berkeley.edu
-Aurelia Guy
-Benjamin Recht 
-'''
-################################################
+#Code in this file is adapted from
+#the Augmented Random Search method
+#https://github.com/modestyachts/ARS
 import tensorflow as tf
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -21,7 +17,6 @@ import parser
 import time
 import os
 import numpy as np
-import gym
 import logz
 import ray
 import utilss
