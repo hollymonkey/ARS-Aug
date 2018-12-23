@@ -52,3 +52,9 @@ python train_cifar.py --model_name=wrn \
                       --dataset='cifar10' \
                       --use_cpu=0
 ```
+
+**If you find this help your research, please cite:**
+
+```
+@article{geng2018learning, title={Learning data augmentation policies using augmented random search}, author={Geng, Mingyang and Xu, Kele and Ding, Bo and Wang, Huaimin and Zhang, Lei}, journal={arXiv preprint arXiv:1811.04768}, year={2018} }
+```
